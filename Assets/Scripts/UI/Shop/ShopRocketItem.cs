@@ -18,15 +18,16 @@ namespace UI.Shop
 
         public static UnityAction OnSelectAction;
 
+        private SkinData item;
         private int cost;
 
         #region select
 
-        public bool IsSelected => RocketSkinsData.RocketSkin == icon.sprite;
+        public bool IsSelected => RocketSkinsData.RocketSkin.Id == item.Id;
 
         public void SetSelected()
         {
-            RocketSkinsData.RocketSkin = icon.sprite;
+            RocketSkinsData.RocketSkin = item;
             OnSelectAction?.Invoke();
         }
 
@@ -48,9 +49,10 @@ namespace UI.Shop
             PlayerStatsData.OnCoinsChanged += UpdateInfo;
         }
 
-        public void Initialize(Sprite _skinSprite)
+        public void Initialize(SkinData _skin)
         {
-            icon.sprite = _skinSprite;
+            item = _skin;
+            icon.sprite = _skin.Icon;
 
             cost = (50 * (1 + int.Parse(icon.sprite.name)) / 2);
             UpdateInfo();

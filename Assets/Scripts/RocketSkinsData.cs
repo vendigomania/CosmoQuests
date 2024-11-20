@@ -6,23 +6,32 @@ using UnityEngine.Events;
 
 namespace Data
 {
+    [System.Serializable]
+    public struct SkinData
+    {
+        public int Id;
+        public string Name;
+        public string Description;
+        public Sprite Icon;
+    }
+
     public class RocketSkinsData : MonoBehaviour
     {
-        public Sprite[] sprites;
+        [SerializeField] SkinData[] skins;
 
-        public static Sprite[] Sprites => Instance.sprites;
+        public static SkinData[] Skins => Instance.skins;
 
         private static RocketSkinsData Instance;
 
         //skin
-        public static UnityAction<Sprite> OnSkinChanged;
+        public static UnityAction<SkinData> OnSkinChanged;
 
-        public static Sprite RocketSkin
+        public static SkinData RocketSkin
         {
-            get => Sprites[PlayerPrefs.GetInt("SelectedSpriteId", 0)];
+            get => Skins[PlayerPrefs.GetInt("SelectedSkinId", 0)];
             set
             {
-                PlayerPrefs.SetInt("SelectedSpriteId", int.Parse(value.name) - 1);
+                PlayerPrefs.SetInt("SelectedSkinId", value.Id);
                 OnSkinChanged?.Invoke(value);
             }
         }

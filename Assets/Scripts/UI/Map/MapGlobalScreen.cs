@@ -10,6 +10,14 @@ namespace UI
 {
     public class MapGlobalScreen : MonoBehaviour
     {
+        [System.Serializable]
+        public struct MapInfo
+        {
+            public string Name;
+            public string Description;
+        }
+
+
         [SerializeField] private GameObject[] lives;
 
         [SerializeField] private RectTransform globalMap;
@@ -25,8 +33,14 @@ namespace UI
 
         [SerializeField] private TMP_Text coinsCountLable;
 
+        [Space, SerializeField] private Button previewBtn;
+        [SerializeField] private GameObject galaxyPreviewWindow;
+        [SerializeField] private TMP_Text previewNameLable;
+        [SerializeField] private TMP_Text previewDescLable;
+
         [Space, SerializeField] private MapLocalScreen mapLocalScreen;
 
+        [Space, SerializeField] private MapInfo[] mapsInfo;
 
         public static MapGlobalScreen Instance { get; private set; }
 
@@ -42,11 +56,17 @@ namespace UI
             ShowCoins();
 
             PlayerStatsData.OnCoinsChanged += ShowCoins;
-            RocketSkinsData.OnSkinChanged += (spr) => rocketImg.sprite = spr;
+            RocketSkinsData.OnSkinChanged += (skin) => rocketImg.sprite = skin.Icon;
             PlayerStatsData.OnLivesChanged += SetLives;
 
             playMapBtn.onClick.AddListener(OpenLocalMap);
-            playBtnLable.text = $"Play: Map {PlayerStatsData.GlobalStage + 1}";
+            previewBtn.onClick.AddListener(() =>
+            {
+                AudioControl.Instance.Click();
+                galaxyPreviewWindow.SetActive(true);
+            });
+
+            UpdateLocalMapInfo();
 
             shopBtn.onClick.AddListener(ShowShop);
         }
@@ -66,7 +86,7 @@ namespace UI
 
             if (rocketTransform.anchoredPosition != points[PlayerStatsData.GlobalStage].anchoredPosition + randomOffset)
             {
-                playMapBtn.interactable = false;
+                previewBtn.interactable = false;
                 Vector2 curPoint = points[PlayerStatsData.GlobalStage].anchoredPosition;
 
                 rocketTransform.anchoredPosition = Vector2.MoveTowards(
@@ -84,8 +104,8 @@ namespace UI
             {
                 animateMap = false;
 
-                playBtnLable.text = $"Play: Map {PlayerStatsData.GlobalStage + 1}";
-                playMapBtn.interactable = true;
+                UpdateLocalMapInfo();
+                previewBtn.interactable = true;
             }
         }
 
@@ -101,6 +121,13 @@ namespace UI
             mapLocalScreen.ShowAnim();
         }
 
+        private void UpdateLocalMapInfo()
+        {
+            playBtnLable.text = mapsInfo[PlayerStatsData.GlobalStage].Name;
+            previewNameLable.text = $"Go to {mapsInfo[PlayerStatsData.GlobalStage].Name} galaxy?";
+            previewDescLable.text = mapsInfo[PlayerStatsData.GlobalStage].Description;
+        }
+
 
         private void SetMapPosition()
         {
@@ -109,7 +136,7 @@ namespace UI
                 -curPoint.x,
                 Mathf.Clamp(-curPoint.y, -299, 299));
 
-            rocketImg.sprite = RocketSkinsData.RocketSkin;
+            rocketImg.sprite = RocketSkinsData.RocketSkin.Icon;
 
             rocketTransform.anchoredPosition = curPoint + randomOffset;
             rocketTransform.localScale = new Vector2(-Mathf.Sign(randomOffset.x), 1f);
@@ -125,6 +152,7 @@ namespace UI
 
         private void OpenLocalMap()
         {
+            galaxyPreviewWindow.SetActive(false);
             AudioControl.Instance.Click();
             mapLocalScreen.Show();
         }

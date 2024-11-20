@@ -11,6 +11,8 @@ namespace UI.Shop
     {
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private Image current;
+        [SerializeField] private TMP_Text nameLable;
+        [SerializeField] private TMP_Text descLable;
 
         [SerializeField] private List<ShopRocketItem> items = new List<ShopRocketItem>();
         [SerializeField] private TMP_Text coinsLable;
@@ -24,14 +26,14 @@ namespace UI.Shop
             PlayerStatsData.OnCoinsChanged += SetCoins;
             RocketSkinsData.OnSkinChanged += SetSkin;
 
-            for(int num = 0; num < RocketSkinsData.Sprites.Length; num++)
+            for(int num = 0; num < RocketSkinsData.Skins.Length; num++)
             {
                 if(items.Count - 1 < num)
                 {
                     items.Add(Instantiate(items[0], items[0].transform.parent));
                 }
 
-                items[num].Initialize(RocketSkinsData.Sprites[num]);
+                items[num].Initialize(RocketSkinsData.Skins[num]);
             }
 
             Instance = this;
@@ -59,9 +61,12 @@ namespace UI.Shop
             coinsLable.text = PlayerStatsData.Coins.ToString();
         }
 
-        private void SetSkin(Sprite _skin)
+        private void SetSkin(SkinData _skin)
         {
-            current.sprite = _skin;
+            current.sprite = _skin.Icon;
+
+            nameLable.text = _skin.Name;
+            descLable.text = _skin.Description;
         }
     }
 }

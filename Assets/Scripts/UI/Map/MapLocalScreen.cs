@@ -22,7 +22,7 @@ namespace UI
         // Start is called before the first frame update
         void Start()
         {
-            RocketSkinsData.OnSkinChanged += (spr) => rocketImg.sprite = spr;
+            RocketSkinsData.OnSkinChanged += (spr) => rocketImg.sprite = spr.Icon;
             playGameBtn.onClick.AddListener(LaunchGame);
 
             SetLocalMapPosition();
@@ -112,7 +112,7 @@ namespace UI
             currentMap.Root.anchoredPosition = new Vector2(
                 0f, Mathf.Clamp(-currentMap.Points[PlayerStatsData.LocalStage].anchoredPosition.y, -247, 247));
 
-            rocketImg.sprite = RocketSkinsData.RocketSkin;
+            rocketImg.sprite = RocketSkinsData.RocketSkin.Icon;
             rocketTransform.SetParent(currentMap.Root);
             rocketTransform.anchoredPosition = curPoint.anchoredPosition;
             rocketTransform.localScale = new Vector2(Mathf.Sign(curPoint.anchoredPosition.x), 1f);

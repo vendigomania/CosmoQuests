@@ -74,7 +74,7 @@ namespace Minigames.Flask
         {
             isPlaying = true;
 
-            fillProgress += 3f * Time.deltaTime;
+            fillProgress += 0.05f;
 
             if(bonusTimer == 0)
             {
